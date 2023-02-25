@@ -35,14 +35,13 @@ public class DummyService {
     public Dummy getDummy() {
         final long start = System.currentTimeMillis();
         Dummy dummy = new Dummy();
-        dummy.setAlbums(albumService.getAlbums());
+        dummy.setAlbums(albumService.getFewerAlbums());
         dummy.setComments(commentService.getComments());
         dummy.setPhotos(photoService.getPhotos());
         dummy.setPosts(postService.getPosts());
         dummy.setTodos(todoService.getTodos());
         dummy.setUsers(userService.getUsers());
         final long end = System.currentTimeMillis();
-
         System.out.println("The program was running: " + ((double)(end-start)/1000.0d) + "ms.");
 
         return dummy;
@@ -71,7 +70,7 @@ public class DummyService {
     }
 
     public Mono<Dummy> callService() {
-        var albums = albumService.getMonoAlbums();
+        var albums = albumService.getHalfAlbums();
         var comments = commentService.getMonoComments();
         var photos = photoService.getMonoPhotos();
         var posts = postService.getMonoPosts();

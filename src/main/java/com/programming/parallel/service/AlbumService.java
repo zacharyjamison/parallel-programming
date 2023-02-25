@@ -10,6 +10,7 @@ import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -17,7 +18,6 @@ public class AlbumService {
 
     @Autowired
     DummyClient dummyClient;
-
 
     public List<Albums> getAlbums()  {
         try {
@@ -31,6 +31,11 @@ public class AlbumService {
         return null;
     }
 
+    public List<Albums> getFewerAlbums() {
+        return getAlbums().stream().limit(getAlbums().size()/2)
+                .collect(Collectors.toList());
+    }
+
     public Mono<List<Albums>> getMonoAlbums()  {
         return Mono.fromCallable(() -> {
             TimeUnit.MILLISECONDS.sleep(1000);
@@ -39,5 +44,12 @@ public class AlbumService {
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
+    public Mono<List<Albums>> getHalfAlbums() {
+        return getMonoAlbums().flatMap( albums -> {
+                return Mono.just(albums.stream()
+                        .limit(albums.size()/2)
+                        .collect(Collectors.toList()));
+        });
+    }
 
 }
